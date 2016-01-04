@@ -1,7 +1,3 @@
-# library(tools)
-# library(data.table)
-# library(readxl)
-
 import = function(file_paths, mapping = NULL, merge = F) {
 
   # Find files absolute paths, names and extensions
@@ -30,15 +26,15 @@ import = function(file_paths, mapping = NULL, merge = F) {
     fe = file_exts[i]
 
     if (fe %in% c("csv", "txt")) {
-      dt = fread(fp, check.names = T, na.strings = c("ND", "NA", "", "-9999"))
+      dt = data.table::fread(fp, check.names = T, na.strings = c("ND", "NA", "", "-9999"))
     } else if (fe %in% c("xls", "xlsx")) {
-      dt = as.data.table(read_excel(fp))
+      dt = data.table::as.data.table(read_excel(fp))
     } else {
       warning("Unknown .", fe, " file format (supported formats are csv, xls, xlsx).")
       next
     }
 
-    dt.list[[i]] = copy(dt)
+    dt.list[[i]] = data.table::copy(dt)
 
   }
 

@@ -3,8 +3,7 @@ Type: Package
 Title: Helpers Functions For Elioth Tools
 Version: 0.1
 Date: 2016-01-04
-Author: Felix Pouchain
-Maintainer: Felix Pouchain f.pouchain@elioth.fr
+Author: person("Felix", "Pouchain", email = "f.pouchain@elioth.fr", role = c("aut", "cre"))
 Description: File I/O
 License: MIT
 LazyData: TRUE
