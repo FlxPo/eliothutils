@@ -1,4 +1,4 @@
-import = function(file_paths, merge = F, sheets = 1) {
+import = function(file_paths, merge_tables = F, sheets = 1) {
 
   # Find files absolute paths, names and extensions
   file_names = basename(file_paths)
@@ -18,23 +18,45 @@ import = function(file_paths, merge = F, sheets = 1) {
 
   # Loop over the the list of files
   dt.list = list()
+  len = length(file_paths)
+  k = 1
 
-  for (i in 1:length(file_paths)) {
+  while(len > 0) {
 
     # Try to open the file based on extension
-    fp = file_paths[i]
-    fe = file_exts[i]
+    fp = file_paths[len]
+    fe = file_exts[len]
 
     if (fe %in% c("csv", "txt")) {
-      dt = data.table::fread(fp, check.names = T, na.strings = c("ND", "NA", "", "-9999"))
+
+      dt = data.table::fread(fp,
+                             check.names = T,
+                             na.strings = c("ND", "NA", "", "-9999"))
+
+      dt.list[[k]] = data.table::copy(dt)
+      k = k + 1
+
     } else if (fe %in% c("xls", "xlsx")) {
-      dt = data.table::as.data.table(read_excel(fp, sheet = sheets))
+
+      if (sheets == "all") {
+        sh = readxl::excel_sheets(fp)
+      } else {
+        sh = sheets
+      }
+
+      for (s in sh) {
+        dt = data.table::as.data.table(readxl::read_excel(fp, sheet = s))
+        dt.list[[k]] = data.table::copy(dt)
+        k = k + 1
+      }
+
     } else {
       warning("Unknown .", fe, " file format (supported formats are csv, xls, xlsx).")
       next
     }
 
-    dt.list[[i]] = data.table::copy(dt)
+    # Next file
+    len = len - 1
 
   }
 
@@ -42,9 +64,8 @@ import = function(file_paths, merge = F, sheets = 1) {
 
   # Format result
   if (length(dt.list) < 2) { dt.list = dt.list[[1]] }
-  if (length(dt.list) < 2 & merge = T) {dt.list = rbindlist(dt.list)}
+  if (length(dt.list) < 2 & merge_tables == T) {dt.list = rbindlist(dt.list)}
 
   return(dt.list)
-
 
 }
