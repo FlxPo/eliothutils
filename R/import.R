@@ -1,4 +1,4 @@
-import = function(file_paths, mapping = NULL, merge = F) {
+import = function(file_paths, merge = F, sheets = 1) {
 
   # Find files absolute paths, names and extensions
   file_names = basename(file_paths)
@@ -28,7 +28,7 @@ import = function(file_paths, mapping = NULL, merge = F) {
     if (fe %in% c("csv", "txt")) {
       dt = data.table::fread(fp, check.names = T, na.strings = c("ND", "NA", "", "-9999"))
     } else if (fe %in% c("xls", "xlsx")) {
-      dt = data.table::as.data.table(read_excel(fp))
+      dt = data.table::as.data.table(read_excel(fp, sheet = sheets))
     } else {
       warning("Unknown .", fe, " file format (supported formats are csv, xls, xlsx).")
       next
@@ -39,7 +39,10 @@ import = function(file_paths, mapping = NULL, merge = F) {
   }
 
   dt.list = Filter(function(x) {!is.null(x)}, dt.list)
+
+  # Format result
   if (length(dt.list) < 2) { dt.list = dt.list[[1]] }
+  if (length(dt.list) < 2 & merge = T) {dt.list = rbindlist(dt.list)}
 
   return(dt.list)
 
