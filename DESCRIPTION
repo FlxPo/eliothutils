@@ -1,10 +1,14 @@
 Package: eliothutils
 Type: Package
-Title: What the Package Does (Title Case)
+Title: Helpers Functions For Elioth Tools
 Version: 0.1
 Date: 2016-01-04
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Felix Pouchain
+Maintainer: Felix Pouchain f.pouchain@elioth.fr
+Description: File I/O
+License: MIT
 LazyData: TRUE
+Imports:
+	tools,
+	data.table,
+	readxl
